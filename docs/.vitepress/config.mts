@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Limer-Ui",
   description: "高仿 ElementPlus 组件库",
-  base: "/limer-ui/",
+  base: "/Limer-Ui/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
