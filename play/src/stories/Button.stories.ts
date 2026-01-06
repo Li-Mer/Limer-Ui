@@ -1,53 +1,76 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3';
+import { fn } from '@storybook/test';
+import { LiButton } from 'limer-ui';
 
-import { fn } from 'storybook/test';
+type Story = StoryObj<typeof LiButton> & { argTypes?: ArgTypes };
 
-import Button from './Button.vue';
+const meta: Meta<typeof LiButton> = {
+    title: 'Components/Button',
+  component: LiButton,
+    subcomponents: {},
+    tags: ['autodocs'],
+    argTypes: {
+        type: {
+      control: { type: "select" },
+      options: ["primary", "success", "warning", "danger", "info", ""],
+    },
+    size: {
+      control: { type: "select" },
+      options: ["large", "default", "small", ""],
+    },
+    disabled: {
+      control: "boolean",
+    },
+    loading: {
+      control: "boolean",
+    },
+    useThrottle: {
+      control: "boolean",
+    },
+    throttleDuration: {
+      control: "number",
+    },
+    autofocus: {
+      control: "boolean",
+    },
+    tag: {
+      control: { type: "select" },
+      options: ["button", "a", "div"],
+    },
+    nativeType: {
+      control: { type: "select" },
+      options: ["button", "submit", "reset", ""],
+    },
+    icon: {
+      control: { type: "text" },
+    },
+    loadingIcon: {
+      control: { type: "text" },
+    },
+  },
+  args: { onClick: fn() },
+};
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories
-const meta = {
-  title: 'Example/Button',
-  component: Button,
-  // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ['autodocs'],
+const container = (val: string) => `<div style="margin: 5px;">${val}</div>`;
+
+export const Default: Story & { args: { content: string } } = {
   argTypes: {
-    size: { control: 'select', options: ['small', 'medium', 'large'] },
-    backgroundColor: { control: 'color' },
+    content: {
+      control: { type: "text" },
+    }
   },
   args: {
-    primary: false,
-    // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#story-args
-    onClick: fn(),
+    type: 'primary',
+    content: 'Button',
   },
-} satisfies Meta<typeof Button>;
+  render: (args:any) => ({
+    components: { LiButton },
+    setup() {
+      return { args };
+    },
+    template: container('<LiButton v-bind="args" @click="args.onClick">{{ args.content }}</LiButton>'),
+  }),
+}
+
 
 export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Primary: Story = {
-  args: {
-    primary: true,
-    label: 'Button',
-  },
-};
-
-export const Secondary: Story = {
-  args: {
-    primary: false,
-    label: 'Button',
-  },
-};
-
-export const Large: Story = {
-  args: {
-    label: 'Button',
-    size: 'large',
-  },
-};
-
-export const Small: Story = {
-  args: {
-    label: 'Button',
-    size: 'small',
-  },
-};
