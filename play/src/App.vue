@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <li-button>Click Me</li-button>
+  <li-button type="primary">Click Me</li-button>
 </template>
 
 <style scoped>

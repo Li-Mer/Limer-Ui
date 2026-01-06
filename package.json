@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'todo'",
+    "test": "pnpm --filter @limer-ui/components test",
     "dev": "pnpm -C play dev",
     "typecheck:node": "tsc -p tsconfig.node.json --noEmit",
     "typecheck:web": "vue-tsc -p tsconfig.web.json --composite false --noEmit",
