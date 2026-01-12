@@ -1,8 +1,98 @@
-import {describe,it,expect,vi} from 'vitest';
+import {describe,it,expect,vi,test} from 'vitest';
 import {mount} from '@vue/test-utils';
 import Button from './Button.vue';
+import ButtonGroup from './ButtonGroup.vue';
+import Icon from '../Icon/Icon.vue';
 
 describe('Button.vue', () => { 
+     const onClick = vi.fn();
+    test("basic button", async () => {
+        const wrapper = mount(() => (
+            <Button type="primary" {...{ onClick }}>
+                button content
+            </Button>
+        ));
+
+        // class
+        expect(wrapper.classes()).toContain("li-button--primary");
+
+        // slot
+        expect(wrapper.get("button").text()).toBe("button content");
+
+        // events
+        await wrapper.get("button").trigger("click");
+        expect(onClick).toHaveBeenCalledOnce();
+    });
+
+    test("disabled button", async () => {
+        const wrapper = mount(() => (
+            <Button disabled {...{ onClick }}>
+                disabled button
+            </Button>
+        ));
+
+        // class
+        expect(wrapper.classes()).toContain("is-disabled");
+
+        // attrs
+        expect(wrapper.attributes("disabled")).toBeDefined();
+        expect(wrapper.find("button").element.disabled).toBeTruthy();
+
+        // events
+        await wrapper.get("button").trigger("click");
+        expect(onClick).toHaveBeenCalledOnce();
+        expect(wrapper.emitted("click")).toBeUndefined();
+    });
+
+    test("loading button", () => {
+        const wrapper = mount(Button, {
+            props: {
+                loading: true,
+            },
+            slots: {
+                default: "loading button",
+            },
+            global: {
+                stubs: ["LiIcon"],
+            },
+        });
+
+        // class
+        expect(wrapper.classes()).toContain("is-loading");
+
+        // attrs
+        expect(wrapper.attributes("disabled")).toBeDefined();
+        expect(wrapper.find("button").element.disabled).toBeTruthy();
+
+        // events
+        wrapper.get("button").trigger("click");
+        expect(wrapper.emitted()).not.toHaveProperty("click");
+
+        // icon
+        const iconElement = wrapper.findComponent(Icon);
+        expect(iconElement.exists()).toBeTruthy();
+        expect(iconElement.attributes("icon")).toBe("spinner");
+    });
+
+    test("icon button", () => {
+        const wrapper = mount(Button, {
+            props: {
+                icon: "arrow-up",
+            },
+            slots: {
+                default: "icon button",
+            },
+            global: {
+                stubs: ["LiIcon"],
+            },
+        });
+
+        const iconElement = wrapper.findComponent(Icon);
+        expect(iconElement.exists()).toBeTruthy();
+        expect(iconElement.attributes("icon")).toBe("arrow-up");
+    });
+
+    // Props: type
     it("should has the correct type class when type prop is set", () => {
         const types = ["primary", "success", "warning", "danger", "info"];
         types.forEach((type) => {
@@ -66,4 +156,75 @@ describe('Button.vue', () => {
         await wrapper.trigger("click");
         expect(wrapper.emitted().click).toHaveLength(1);
     });
+
+    // Exception Handling: loading state
+    it("should display loading icon and not emit click event when button is loading", async () => {
+        const wrapper = mount(Button, {
+            props: { loading: true },
+            global: {
+                stubs: ["LiIcon"],
+            },
+        });
+        const iconElement = wrapper.findComponent(Icon);
+
+        expect(wrapper.find(".loading-icon").exists()).toBe(true);
+        expect(iconElement.exists()).toBeTruthy();
+        expect(iconElement.attributes("icon")).toBe("spinner");
+        await wrapper.trigger("click");
+        expect(wrapper.emitted("click")).toBeUndefined();
+    });
 })
+describe("ButtonGroup.vue", () => {
+    test("basic button group", async () => {
+        const wrapper = mount(() => (
+            <ButtonGroup>
+                <Button>button 1</Button>
+                <Button>button 2</Button>
+            </ButtonGroup>
+        ));
+
+        expect(wrapper.classes()).toContain("li-button-group");
+    });
+
+    test("button group size", () => {
+        const sizes = ["large", "default", "small"];
+        sizes.forEach((size) => {
+            const wrapper = mount(() => (
+                <ButtonGroup size={size as any}>
+                    <Button>button 1</Button>
+                    <Button>button 2</Button>
+                </ButtonGroup>
+            ));
+
+            const buttonWrapper = wrapper.findComponent(Button);
+            expect(buttonWrapper.classes()).toContain(`li-button--${size}`);
+        });
+    });
+
+    test("button group type", () => {
+        const types = ["primary", "success", "warning", "danger", "info"];
+        types.forEach((type) => {
+            const wrapper = mount(() => (
+                <ButtonGroup type={type as any}>
+                    <Button>button 1</Button>
+                    <Button>button 2</Button>
+                </ButtonGroup>
+            ));
+
+            const buttonWrapper = wrapper.findComponent(Button);
+            expect(buttonWrapper.classes()).toContain(`li-button--${type}`);
+        });
+    });
+
+    test("button group disabled", () => {
+        const wrapper = mount(() => (
+            <ButtonGroup disabled>
+                <Button>button 1</Button>
+                <Button>button 2</Button>
+            </ButtonGroup>
+        ));
+
+        const buttonWrapper = wrapper.findComponent(Button);
+        expect(buttonWrapper.classes()).toContain(`is-disabled`);
+    });
+});

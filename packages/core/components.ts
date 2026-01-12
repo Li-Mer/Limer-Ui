@@ -1,3 +1,3 @@
-import { LiButton } from "@limer-ui/components";
+import { LiButton, LiButtonGroup,LiIcon } from "@limer-ui/components";
 import type { Plugin } from "vue";
-export default [LiButton] as Plugin[];
+export default [LiButton,LiButtonGroup,LiIcon] as Plugin[];
