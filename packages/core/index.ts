@@ -7,5 +7,5 @@ import'@limer-ui/theme-chalk/index.css';
 
 const installer = makeInstaller(components);
 
-export * from "@limer-ui/components";
+export * from "../components";
 export default installer;

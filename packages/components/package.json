@@ -20,7 +20,5 @@
     "vue": "^3.5.26"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.8",
-    "async-validator": "^4.2.5"
   }
 }
